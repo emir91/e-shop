@@ -23,7 +23,8 @@
   "homepage": "https://github.com/emir91/e-shop#readme",
   "dependencies": {
     "dotenv": "^16.0.0",
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "mongoose": "^6.2.10"
   },
   "devDependencies": {
     "concurrently": "^7.1.0",
