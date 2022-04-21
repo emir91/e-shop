@@ -3,10 +3,13 @@ import dotenv from "dotenv"
 import connectDB from "./config/db.js"
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js"
 import productRouter from "./routes/productRoutes.js"
+import userRouter from "./routes/userRoutes.js"
 
 dotenv.config()
 
 const app = express()
+
+app.use(express.json())
 
 connectDB()
 
@@ -15,6 +18,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/products", productRouter)
+app.use("/api/users", userRouter)
 
 app.use(notFound)
 
