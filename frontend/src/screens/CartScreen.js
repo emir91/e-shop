@@ -28,7 +28,7 @@ const CartScreen = () => {
   }
 
   const checkoutHandler = () => {
-    navigate("/login?redirect=shipping")
+    navigate("/login/?redirect=/shipping")
   }
 
   return (
@@ -37,7 +37,7 @@ const CartScreen = () => {
         <h1>Shopping Cart</h1>
         {cartItems.length === 0 ? (
           <Message>
-            Your cart is empty <Link to='/'>Go Back</Link>
+            Your cart is empty <Link to="/">Go Back</Link>
           </Message>
         ) : (
           cartItems.map((item) => {
@@ -53,7 +53,7 @@ const CartScreen = () => {
                   <Col md={2}>${item.price}</Col>
                   <Col md={2}>
                     <Form.Control
-                      as='select'
+                      as="select"
                       value={item.qty}
                       onChange={(e) =>
                         dispatch(
@@ -70,11 +70,11 @@ const CartScreen = () => {
                   </Col>
                   <Col md={2}>
                     <Button
-                      type='button'
-                      variant='light'
+                      type="button"
+                      variant="light"
                       onClick={() => removeFromCartHandler(item.product)}
                     >
-                      <i className='fas fa-trash'></i>
+                      <i className="fas fa-trash"></i>
                     </Button>
                   </Col>
                 </Row>
@@ -85,8 +85,8 @@ const CartScreen = () => {
       </Col>
       <Col md={4}>
         <Card>
-          <ListGroup variant='flush'>
-            <ListGroup.Item className='text-center'>
+          <ListGroup variant="flush">
+            <ListGroup.Item className="text-center">
               <h2>
                 Subtotal {cartItems.reduce((acc, item) => acc + item.qty, 0)}{" "}
                 items
@@ -96,8 +96,8 @@ const CartScreen = () => {
                 .reduce((acc, item) => acc + item.qty * item.price, 0)
                 .toFixed(2)}
               <Button
-                type='button'
-                className='btn-block button'
+                type="button"
+                className="btn-block button"
                 disabled={cartItems.length === 0}
                 onClick={checkoutHandler}
               >
