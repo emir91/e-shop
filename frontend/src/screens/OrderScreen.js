@@ -41,6 +41,7 @@ const OrderScreen = () => {
         setSdkReady(true)
       }
       document.body.appendChild(script)
+      console.log(clientId)
     }
     if (!order || successPay || order._id !== id) {
       dispatch({ type: ORDER_PAY_RESET })
@@ -56,6 +57,7 @@ const OrderScreen = () => {
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(id, paymentResult))
+    dispatch({ type: ORDER_PAY_RESET })
   }
 
   return loading ? (
