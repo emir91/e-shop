@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button, Table } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
@@ -8,17 +9,25 @@ import Loader from "../components/Loader"
 
 const UserListScreen = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const userList = useSelector((state) => state.userList)
   const { loading, users, error } = userList
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
 
   const deleteHandler = (id) => {
     console.log("deleted")
   }
 
   useEffect(() => {
-    dispatch(listUsers())
-  }, [dispatch])
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(listUsers())
+    } else {
+      navigate("/login")
+    }
+  }, [dispatch, navigate, userInfo])
 
   return (
     <>
