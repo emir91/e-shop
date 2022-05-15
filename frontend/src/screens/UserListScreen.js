@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button, Table } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
-import { listUsers } from "../actions/userActions"
+import { listUsers, deleteUser } from "../actions/userActions"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
 
@@ -17,8 +17,13 @@ const UserListScreen = () => {
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
 
+  const userDelete = useSelector((state) => state.userDelete)
+  const { success: successDeleteUser } = userDelete
+
   const deleteHandler = (id) => {
-    console.log("deleted")
+    if (window.confirm("Are you sure")) {
+      dispatch(deleteUser(id))
+    }
   }
 
   useEffect(() => {
@@ -27,7 +32,7 @@ const UserListScreen = () => {
     } else {
       navigate("/login")
     }
-  }, [dispatch, navigate, userInfo])
+  }, [dispatch, navigate, userInfo, successDeleteUser])
 
   return (
     <>
