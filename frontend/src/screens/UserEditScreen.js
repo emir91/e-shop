@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react"
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
 import { Button, Form } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
-import { getUserDetails } from "../actions/userActions"
+import { getUserDetails, updateUser } from "../actions/userActions"
+import { USER_UPDATE_RESET } from "../constants/userConstants"
 import FormContainer from "../components/FormContainer"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
@@ -17,22 +18,36 @@ const UserEditScreen = () => {
   const navigate = useNavigate()
 
   const dispatch = useDispatch()
+
   const userDetails = useSelector((state) => state.userDetails)
   const { loading, user, error } = userDetails
 
+  const userUpdate = useSelector((state) => state.userUpdate)
+  const {
+    loading: updateLoading,
+    success: updateSuccess,
+    error: updateError,
+  } = userUpdate
+
   const submitHandler = (e) => {
     e.preventDefault()
+    dispatch(updateUser({ _id: id, name, email, isAdmin }))
   }
 
   useEffect(() => {
-    if (!user || user._id !== id) {
-      dispatch(getUserDetails(id))
+    if (updateSuccess) {
+      dispatch({ type: USER_UPDATE_RESET })
+      navigate("/admin/userList")
     } else {
-      setName(user.name)
-      setEmail(user.email)
-      setIsAdmin(user.isAdmin)
+      if (!user || user._id !== id) {
+        dispatch(getUserDetails(id))
+      } else {
+        setName(user.name)
+        setEmail(user.email)
+        setIsAdmin(user.isAdmin)
+      }
     }
-  }, [user, dispatch, id])
+  }, [user, dispatch, id, navigate, updateSuccess])
 
   return (
     <>
@@ -41,6 +56,8 @@ const UserEditScreen = () => {
       </Link>
       <FormContainer>
         <h1>Edit User</h1>
+        {updateLoading && <Loader />}
+        {updateError && <Message variant="danger">{updateError}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -69,7 +86,6 @@ const UserEditScreen = () => {
 
             <Form.Group controlId="isadmin" className="my-3">
               <Form.Check
-                type="password"
                 checked={isAdmin}
                 onChange={(e) => setIsAdmin(e.target.checked)}
                 label="Is Admin"
