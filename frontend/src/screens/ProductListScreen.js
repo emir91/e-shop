@@ -40,7 +40,7 @@ const ProductListScreen = () => {
         <Col>
           <h1>Products</h1>
         </Col>
-        <Col className="text-right">
+        <Col className="d-flex justify-content-end">
           <Button className="my-3" onClick={createProductHandler()}>
             <i className="fas fa-plus"></i> Create Product
           </Button>
