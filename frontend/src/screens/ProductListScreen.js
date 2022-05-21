@@ -41,9 +41,8 @@ const ProductListScreen = () => {
           <h1>Products</h1>
         </Col>
         <Col className="text-right">
-          <Button className="my-3">
-            <i className="fas fa-plus" onClick={createProductHandler()}></i>{" "}
-            Create Product
+          <Button className="my-3" onClick={createProductHandler()}>
+            <i className="fas fa-plus"></i> Create Product
           </Button>
         </Col>
       </Row>
