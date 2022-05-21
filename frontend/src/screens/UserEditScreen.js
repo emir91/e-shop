@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { Link, useParams, useLocation, useNavigate } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { Button, Form } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
 import { getUserDetails, updateUser } from "../actions/userActions"
@@ -14,7 +14,6 @@ const UserEditScreen = () => {
   const [name, setName] = useState("")
 
   const { id } = useParams()
-  const location = useLocation()
   const navigate = useNavigate()
 
   const dispatch = useDispatch()
