@@ -3,9 +3,14 @@ import { useNavigate } from "react-router-dom"
 import { LinkContainer } from "react-router-bootstrap"
 import { Button, Col, Row, Table } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
-import { listProduct, deleteProduct } from "../actions/productActions"
+import {
+  listProduct,
+  deleteProduct,
+  createProduct,
+} from "../actions/productActions"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants"
 
 const ProductListScreen = () => {
   const dispatch = useDispatch()
@@ -15,7 +20,19 @@ const ProductListScreen = () => {
   const { loading, products, error } = productList
 
   const productDelete = useSelector((state) => state.productDelete)
-  const { loading: deleteLoading, success, error: deleteError } = productDelete
+  const {
+    loading: deleteLoading,
+    success: successDelete,
+    error: deleteError,
+  } = productDelete
+
+  const productCreate = useSelector((state) => state.productCreate)
+  const {
+    loading: createLoading,
+    success: successCreate,
+    error: createError,
+    product: createdProduct,
+  } = productCreate
 
   const userLogin = useSelector((state) => state.userLogin)
   const { userInfo } = userLogin
@@ -26,17 +43,30 @@ const ProductListScreen = () => {
     }
   }
 
-  const createProductHandler = (product) => {
-    console.log("create product")
+  const createProductHandler = () => {
+    dispatch(createProduct())
   }
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listProduct())
-    } else {
+    dispatch({ type: PRODUCT_CREATE_RESET })
+
+    if (!userInfo || !userInfo.isAdmin) {
       navigate("/login")
     }
-  }, [dispatch, navigate, success, userInfo])
+
+    if (successCreate) {
+      navigate(`/admin/product/${createdProduct._id}/edit`)
+    } else {
+      dispatch(listProduct())
+    }
+  }, [
+    dispatch,
+    navigate,
+    successCreate,
+    successDelete,
+    createdProduct,
+    userInfo,
+  ])
 
   return (
     <>
@@ -45,13 +75,15 @@ const ProductListScreen = () => {
           <h1>Products</h1>
         </Col>
         <Col className="d-flex justify-content-end">
-          <Button className="my-3" onClick={createProductHandler()}>
+          <Button className="my-3" onClick={createProductHandler}>
             <i className="fas fa-plus"></i> Create Product
           </Button>
         </Col>
       </Row>
       {deleteLoading && <Loader />}
       {deleteError && <Message variant="danger">{deleteError}</Message>}
+      {createLoading && <Loader />}
+      {createError && <Message variant="danger">{createError}</Message>}
       {loading ? (
         <Loader />
       ) : error ? (
