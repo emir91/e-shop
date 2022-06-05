@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react"
 import { Link, useParams, useNavigate } from "react-router-dom"
 import { Button, Form } from "react-bootstrap"
 import { useSelector, useDispatch } from "react-redux"
-import { listProductDetails } from "../actions/productActions"
+import { listProductDetails, updateProduct } from "../actions/productActions"
 import FormContainer from "../components/FormContainer"
 import Message from "../components/Message"
 import Loader from "../components/Loader"
+import { PRODUCT_UPDATE_RESET } from "../constants/productConstants"
 
 const ProductEditScreen = () => {
   const [name, setName] = useState("")
@@ -16,7 +17,7 @@ const ProductEditScreen = () => {
   const [countInStock, setCountInStock] = useState(0)
   const [description, setDescription] = useState("")
 
-  const { productId } = useParams()
+  const { id } = useParams()
   const navigate = useNavigate()
 
   const dispatch = useDispatch()
@@ -24,24 +25,47 @@ const ProductEditScreen = () => {
   const productDetails = useSelector((state) => state.productDetails)
   const { loading, product, error } = productDetails
 
+  const productUpdate = useSelector((state) => state.productUpdate)
+  const {
+    loading: updateLoading,
+    success: updateSuccess,
+    error: updateError,
+  } = productUpdate
+
   const submitHandler = (e) => {
     e.preventDefault()
-    //UPDATE PRODUCT
+    dispatch(
+      updateProduct({
+        _id: id,
+        name,
+        price,
+        image,
+        brand,
+        category,
+        countInStock,
+        description,
+      })
+    )
   }
 
   useEffect(() => {
-    if (!product || product._id !== productId) {
-      dispatch(listProductDetails(productId))
+    if (updateSuccess) {
+      dispatch({ type: PRODUCT_UPDATE_RESET })
+      navigate("/admin/productlist")
     } else {
-      setName(product.name)
-      setPrice(product.price)
-      setImage(product.image)
-      setBrand(product.brand)
-      setCategory(product.category)
-      setCountInStock(product.countInStock)
-      setDescription(product.countInStock)
+      if (!product || product._id !== id) {
+        dispatch(listProductDetails(id))
+      } else {
+        setName(product.name)
+        setPrice(product.price)
+        setImage(product.image)
+        setBrand(product.brand)
+        setCategory(product.category)
+        setCountInStock(product.countInStock)
+        setDescription(product.description)
+      }
     }
-  }, [product, dispatch, productId, navigate])
+  }, [product, dispatch, id, navigate, updateSuccess])
 
   return (
     <>
@@ -50,7 +74,8 @@ const ProductEditScreen = () => {
       </Link>
       <FormContainer>
         <h1>Edit Product</h1>
-
+        {updateLoading && <Loader />}
+        {updateError && <Message variant="danger">{updateError}</Message>}
         {loading ? (
           <Loader />
         ) : error ? (
@@ -68,7 +93,7 @@ const ProductEditScreen = () => {
             </Form.Group>
 
             <Form.Group controlId="price" className="my-3">
-              <Form.Label>Email Address</Form.Label>
+              <Form.Label>Price</Form.Label>
               <Form.Control
                 type="number"
                 value={price}
