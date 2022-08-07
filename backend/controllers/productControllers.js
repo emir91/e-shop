@@ -2,7 +2,7 @@ import asyncHandler from "express-async-handler"
 import Product from "../models/productModel.js"
 
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 2
+  const pageSize = 10
   const page = Number(req.query.pageNumber) || 1
 
   const keyword = req.query.keyword ? {
@@ -135,11 +135,18 @@ const createProductReview = asyncHandler(async (req, res) => {
   }
 })
 
+const getTopRatedProducts = asyncHandler(async (req, res) => {
+  const products = await Product.find({}).sort({rating: -1}).limit(3)
+
+  res.json(products)
+})
+
 export {
   getProducts,
   getProductById,
   deleteProduct,
   createProduct,
   updateProduct,
-  createProductReview
+  createProductReview,
+  getTopRatedProducts
 }
