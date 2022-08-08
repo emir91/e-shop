@@ -7,6 +7,7 @@ import { Row, Col, Image, ListGroup, Card, Button, Form } from "react-bootstrap"
 import Rating from "../components/Rating"
 import Loader from "../components/Loader"
 import Message from "../components/Message"
+import Meta from "../components/Meta"
 
 const ProductScreen = () => {
   const [qty, setQty] = useState(1)
@@ -62,6 +63,7 @@ const ProductScreen = () => {
         <Message variant='danger'>{error}</Message>
       ) : (
         <>
+          <Meta title={product.name}/>
           <Link className='btn btn-light my-3' to='/'>
             Go Back
           </Link>
